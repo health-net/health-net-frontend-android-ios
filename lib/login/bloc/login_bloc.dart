@@ -1,23 +1,20 @@
 import 'dart:async';
-
-
-import 'package:meta/meta.dart';
 import 'package:bloc/bloc.dart';
+import 'package:flutter/material.dart';
 import 'package:health_net_frontend_android_ios/authentication/authentication.dart';
-import 'package:health_net_frontend_android_ios/auth_user.dart';
-import 'package:health_net_frontend_android_ios/login/login.dart';
+import 'package:health_net_frontend_android_ios/repository/login_repository.dart';
+import '../login.dart';
 
 class LoginBloc extends Bloc<LoginEvent, LoginState> {
-  final UserRepository userRepository;
+  final UserRepository loginRepo;
   final AuthenticationBloc authenticationBloc;
 
   LoginBloc({
-    @required this.userRepository,
+    @required this.loginRepo,
     @required this.authenticationBloc,
-  })  : assert(userRepository != null),
+  })  : assert(loginRepo != null),
         assert(authenticationBloc != null);
 
-  @override
   LoginState get initialState => LoginInitial();
 
   @override
@@ -26,7 +23,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       yield LoginLoading();
 
       try {
-        final token = await userRepository.authenticate(
+        final token = await loginRepo.authenticate(
           username: event.username,
           password: event.password,
         );

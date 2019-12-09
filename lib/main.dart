@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
-
+import 'package:health_net_frontend_android_ios/common/splash_screen.dart';
+import 'package:health_net_frontend_android_ios/home_page/home_page.dart';
+import 'package:health_net_frontend_android_ios/medical_records/medical_records_page.dart';
+import 'package:health_net_frontend_android_ios/repository/login_repository.dart';
+import 'authentication/authentication.dart';
+import 'login/login.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import 'package:health_net_frontend_android_ios/auth_user.dart';
-import 'package:health_net_frontend_android_ios/authentication/authentication.dart';
-import 'package:health_net_frontend_android_ios/common/common.dart';
-import 'package:health_net_frontend_android_ios/login/login.dart';
-import 'package:health_net_frontend_android_ios/home/home_page.dart';
-
-
-
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -18,14 +14,12 @@ class SimpleBlocDelegate extends BlocDelegate {
     print(event);
   }
 
-  @override
   void onTransition(Bloc bloc, Transition transition) {
     super.onTransition(bloc, transition);
     print(transition);
   }
 
-  @override
-  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
     print(error);
   }
@@ -36,16 +30,17 @@ void main() {
   final userRepository = UserRepository();
   runApp(
     BlocProvider<AuthenticationBloc>(
-      builder: (context) {
-        return AuthenticationBloc(userRepository: userRepository)
+      create: (context) {
+        return AuthenticationBloc(authRepo: userRepository)
           ..add(AppStarted());
       },
       child: App(userRepository: userRepository),
     ),
   );
+  
 }
 
-class App extends StatelessWidget {
+ class App extends StatelessWidget {
   final UserRepository userRepository;
 
   App({Key key, @required this.userRepository}) : super(key: key);
@@ -55,16 +50,18 @@ class App extends StatelessWidget {
     return MaterialApp(
       home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
         builder: (context, state) {
-          if (state is AuthenticationAuthenticated) {
-            return HomePage();
-          }
-          if (state is AuthenticationUnauthenticated) {
-            return LoginPage(userRepository: userRepository);
+          if (state is AuthenticationUninitialized) {
+            return SplashPage();
           }
           if (state is AuthenticationLoading) {
-            return LoadingIndicator();
+            return SplashPage();
           }
-          return SplashPage();
+          if (state is AuthenticationAuthenticated) {
+            return MyHomePage();
+          }
+          if (state is AuthenticationUnauthenticated) {
+            return MyLoginPage(userRepository: userRepository);
+          }
         },
       ),
     );

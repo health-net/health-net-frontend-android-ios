@@ -15,24 +15,20 @@ class UserRepository {
   }
 
   Future<void> deleteToken() async {
+    /// delete from keystore/keychain
     await Future.delayed(Duration(seconds: 1));
-    //TODO delete token from Keychain(IOS)/Keystore(Android)
-    
     return;
   }
 
   Future<void> persistToken(String token) async {
+    /// write to keystore/keychain
     await Future.delayed(Duration(seconds: 1));
-    
-    //TODO insert token from Keychain(IOS)/Keystore(Android)
     return;
   }
 
   Future<bool> hasToken() async {
-   /* if(await(credentialStorage.read(/*inserire chiave ottenuta da backend*/)))
-      return true;
-    else
-      return false;
-  }*/
-  return false;
+    /// read from keystore/keychain
+    await Future.delayed(Duration(seconds: 1));
+    return false;
+  }
 }

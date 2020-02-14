@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:health_net_frontend_android_ios/common/splash_screen.dart';
-import 'package:health_net_frontend_android_ios/home_page/home_page.dart';
-import 'package:health_net_frontend_android_ios/medical_records/medical_records_page.dart';
-import 'package:health_net_frontend_android_ios/repository/login_repository.dart';
-import 'authentication/authentication.dart';
-import 'login/login.dart';
+import 'package:flutter/scheduler.dart';
+import 'package:flutter/services.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/common/error_popup_dialog.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/common/loading_component.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/authentication/bloc/authentication_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/login_page.dart';
+import 'package:health_net_frontend_android_ios/presentation/themes/bloc/dynamic_theme_bloc.dart';
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 class SimpleBlocDelegate extends BlocDelegate {
@@ -27,43 +28,98 @@ void onError(Bloc bloc, Object error, StackTrace stacktrace) {
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  final userRepository = UserRepository();
   runApp(
     BlocProvider<AuthenticationBloc>(
       create: (context) {
-        return AuthenticationBloc(authRepo: userRepository)
-          ..add(AppStarted());
+        return AuthenticationBloc()..add(AppStarted());
       },
-      child: App(userRepository: userRepository),
-    ),
+      child:App()
+      ),
   );
   
 }
 
  class App extends StatelessWidget {
-  final UserRepository userRepository;
-
-  App({Key key, @required this.userRepository}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: BlocBuilder<AuthenticationBloc, AuthenticationState>(
-        builder: (context, state) {
-          if (state is AuthenticationUninitialized) {
-            return SplashPage();
-          }
-          if (state is AuthenticationLoading) {
-            return SplashPage();
-          }
-          if (state is AuthenticationAuthenticated) {
-            return MyHomePage();
-          }
-          if (state is AuthenticationUnauthenticated) {
-            return MyLoginPage(userRepository: userRepository);
-          }
-        },
+    SystemChrome.setPreferredOrientations(
+      [
+        DeviceOrientation.portraitUp,
+        DeviceOrientation.portraitDown
+      ]
+    );
+    return MultiBlocProvider(providers: [
+      BlocProvider<DynamicThemeBloc>(
+        create: (BuildContext context)=>DynamicThemeBloc(),
       ),
+      BlocProvider<AuthenticationBloc>(
+        create: (BuildContext context)=>AuthenticationBloc(),
+      )
+    ],
+    child: ThemeHandler());
+  }
+  }
+
+  class ThemeHandler extends StatelessWidget{
+  @override
+    Widget build(BuildContext context) {
+     return BlocBuilder<DynamicThemeBloc,DynamicThemeState>(
+      bloc: BlocProvider.of<DynamicThemeBloc>(context),
+      builder: (BuildContext themeContext, themeState) {
+                print(themeState.toString());
+                 return MaterialApp(
+                        theme: themeState.actualTheme,
+                        home: Page(context), 
+                    );
+                  }
+                  );
+            }
+    }
+
+class Page extends StatelessWidget{
+  final BuildContext authContext;
+
+  const Page(this.authContext,{Key key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext themeContext) {
+    return Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: Container(
+                width: MediaQuery.of(themeContext).size.width,
+                height: MediaQuery.of(themeContext).size.height,
+                child:BlocBuilder<AuthenticationBloc,AuthenticationState>(
+                    bloc: BlocProvider.of<AuthenticationBloc>(themeContext),
+                    builder: (BuildContext authContext, authState){
+                        if(authState is AuthenticationUnauthenticated)
+                          {
+                            return LoginPage(); 
+                          }
+                        if(authState is AuthenticationAuthenticated)
+                          {
+                            return Text("Farfetch'd");
+                          }
+                        if(authState is AuthenticationUninitialized)
+                          {
+                          BlocProvider.of<AuthenticationBloc>(themeContext).add(AppStarted());
+                          return LoadingElement();
+                          }
+                        if(authState is AuthenticationFailed)
+                          {
+                            Future.delayed(Duration.zero, (){
+                            showDialog(
+                                context: themeContext,
+                                builder: (BuildContext dialogContext) =>CustomErrorDialog(authState.statusCode)
+                              );
+                            });
+                            BlocProvider.of<AuthenticationBloc>(authContext).add(LoginTentativeFailed());
+                            return LoadingElement();
+                          }
+                      },
+                  )
+      )
     );
   }
-}
+  
+} 
+  

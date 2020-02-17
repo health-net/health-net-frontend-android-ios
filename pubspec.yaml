@@ -24,6 +24,7 @@ dependencies:
   equatable: ^1.0.1
   flutter_secure_storage: ^3.3.1+1
   http: ^0.12.0+2
+  uuid: ^2.0.4
   shared_preferences: ^0.5.6+1
 
   # The following adds the Cupertino Icons font to your application.
@@ -58,6 +59,7 @@ flutter:
   # https://flutter.dev/assets-and-images/#from-packages
   assets:
     - assets/logo/logo.png
+    - assets/splashArt.png
 
   # To add custom fonts to your application, add a fonts section here,
   # in this "flutter" section. Each entry in this list should have a

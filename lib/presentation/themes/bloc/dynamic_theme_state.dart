@@ -10,12 +10,14 @@ class LightThemeState extends DynamicThemeState {
 
   LightThemeState() : super(
     ThemeData(
-      primaryColor: LightThemeMaterialColors().oxfordBlue,
-      accentColor: LightThemeMaterialColors().lightGrey,
+      primaryColor: LightThemeMaterialColors().harlequinGreen,
+      accentColor: LightThemeMaterialColors().harlequinGreen,
       backgroundColor: LightThemeMaterialColors().oxfordBlue,
-      inputDecorationTheme: InputDecorationTheme(
+      cursorColor: Colors.cyan,
+      scaffoldBackgroundColor: Colors.blue,
+      /*inputDecorationTheme: InputDecorationTheme(
        
-      )
+      )*/
     )
   );
 

@@ -13,6 +13,5 @@ class LoadingElement extends StatelessWidget {
             ),
           ),
       );
-
   }
 }

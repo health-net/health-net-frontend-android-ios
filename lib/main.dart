@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/scheduler.dart';
 import 'package:flutter/services.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/common/error_popup_dialog.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/common/loading_component.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/authentication/bloc/authentication_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/error_popup_dialog.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/medical_records/bloc/medical_records_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/login_page.dart';
+import 'package:health_net_frontend_android_ios/presentation/medical_records_page.dart';
 import 'package:health_net_frontend_android_ios/presentation/themes/bloc/dynamic_theme_bloc.dart';
+
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
 class SimpleBlocDelegate extends BlocDelegate {
   @override
   void onEvent(Bloc bloc, Object event) {
@@ -97,7 +100,7 @@ class Page extends StatelessWidget{
                           }
                         if(authState is AuthenticationAuthenticated)
                           {
-                            return Text("Farfetch'd");
+                            return MedicalRecordsPage();
                           }
                         if(authState is AuthenticationUninitialized)
                           {
@@ -115,6 +118,7 @@ class Page extends StatelessWidget{
                             BlocProvider.of<AuthenticationBloc>(authContext).add(LoginTentativeFailed());
                             return LoadingElement();
                           }
+                          return Container(height: 0.0,width: 0.0);
                       },
                   )
       )

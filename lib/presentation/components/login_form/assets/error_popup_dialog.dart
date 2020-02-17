@@ -85,7 +85,7 @@ class CustomErrorDialog extends StatelessWidget{
                   onPressed:(){
                     BlocProvider.of<AuthenticationBloc>(context).add(AppStarted());
                     Navigator.of(context).pop();                      
-                  }   
+                  }
                   ),
       ],
     );

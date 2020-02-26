@@ -9,13 +9,6 @@ class LoginPage extends StatelessWidget{
   Widget build(BuildContext pageContext) {
     CustomLoginFormBloc loginFormBloc = new CustomLoginFormBloc();
     return Container(
-              decoration: BoxDecoration(
-                gradient:LinearGradient(
-                  colors: [Theme.of(pageContext).scaffoldBackgroundColor, Theme.of(pageContext).backgroundColor],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter
-                  ),
-              ),
               child:BlocBuilder<CustomLoginFormBloc, CustomLoginformState>(
                 bloc: loginFormBloc,
                 builder: (BuildContext loginContext, loginState){
@@ -46,11 +39,11 @@ class LoginPage extends StatelessWidget{
                                 height: 360,
                                 width: 350,
                                 decoration: BoxDecoration(
-                                  color: Colors.white,
+                                  border: Border.all(
+                                          color:Colors.white,
+                                          width: 3.0
+                                          ),
                                   borderRadius: BorderRadius.all(Radius.circular(25)),
-                                  boxShadow: const [
-                                    BoxShadow(blurRadius: 40, color: Colors.black),
-                                  ],
                                 ),
                                 child:  BlocProvider<CustomLoginFormBloc>(
                                           create: (BuildContext context) => loginFormBloc,

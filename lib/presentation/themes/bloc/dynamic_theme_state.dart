@@ -8,18 +8,7 @@ abstract class DynamicThemeState extends Equatable {
 
 class LightThemeState extends DynamicThemeState {
 
-  LightThemeState() : super(
-    ThemeData(
-      primaryColor: LightThemeMaterialColors().harlequinGreen,
-      accentColor: LightThemeMaterialColors().harlequinGreen,
-      backgroundColor: LightThemeMaterialColors().oxfordBlue,
-      cursorColor: Colors.cyan,
-      scaffoldBackgroundColor: Colors.blue,
-      /*inputDecorationTheme: InputDecorationTheme(
-       
-      )*/
-    )
-  );
+  LightThemeState() : super(ThemeData.dark());
 
   String toString()
   {
@@ -31,16 +20,7 @@ class LightThemeState extends DynamicThemeState {
   }
 
 class DarkThemeState extends DynamicThemeState {
-  DarkThemeState() : super(
-    ThemeData(
-      //brightness: Brightness.light,
-      primarySwatch: DarkThemeMaterialColors().maastrichtBlue,
-      //primaryColor: oxfordBlue,
-      //primaryColorBrightness: Brightness.dark,    
-      accentColor: DarkThemeMaterialColors().harlequinGreen,
-      //scaffoldBackgroundColor: registrationBlack,
-      //inputDecorationTheme: customInputDecoration,
-  ));
+  DarkThemeState() : super(ThemeData.dark());
   
     String toString()
   {

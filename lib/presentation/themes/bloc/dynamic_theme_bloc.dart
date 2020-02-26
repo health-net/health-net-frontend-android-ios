@@ -18,7 +18,7 @@ class DynamicThemeBloc extends Bloc<DynamicThemeEvent, DynamicThemeState> {
 
   //setting LightTheme if no event occurs.
   @override
-  DynamicThemeState get initialState => (LightThemeState());
+  DynamicThemeState get initialState => (DarkThemeState());
 
   @override
   Stream<DynamicThemeState> mapEventToState(DynamicThemeEvent event,) async*{

@@ -23,18 +23,18 @@ class MedicalRecordsBloc extends Bloc<MedicalRecordsEvent, MedicalRecordsState> 
         List<Patient> result;
         try{
           result=await PatientHandler().getAllPatients();
-        } on RESTAPIConsumptionException catch(excep)
-        {
-          yield MedicalRecordsFetchingFailed(excep.getStatusCode());
+          yield MedicalRecordsInitialized(result);
         }on SocketException catch(excep){
           yield MedicalRecordsFetchingFailed(excep.osError.errorCode);
+        }on RESTAPIConsumptionException catch(excep)
+        {
+          yield MedicalRecordsFetchingFailed(excep.getStatusCode());
         }
-          yield MedicalRecordsInitialized(result);
       }
     
     if(event is PatientRegistrationButtonPressed)
     {
-      yield PatientRegistrationPopupShowing();
+      yield PatientRegistration();
     }
 
     if(event is SpecificPatientSensorsDetailsRequired)

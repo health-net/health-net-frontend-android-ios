@@ -24,12 +24,8 @@ class PatientRegistrationForm extends StatefulWidget{
         width: 300,
         height: 200,
             decoration: BoxDecoration(
-                color: Colors.white,
-                border:Border.all(
-                          width: 3,
-                          color:Theme.of(context).backgroundColor,
-                       ),
-                borderRadius: BorderRadius.all(Radius.circular(64))
+                border:Border.all(width: 3),
+                borderRadius: BorderRadius.all(Radius.circular(16))     
             ),
       margin: EdgeInsets.all(20),
       child: Form(
@@ -48,9 +44,6 @@ class PatientRegistrationForm extends StatefulWidget{
                         decoration: InputDecoration(
               
                                 labelText: 'Patient Name',
-                                labelStyle: TextStyle(
-                                  color:Theme.of(context).backgroundColor
-                                ),
                                 fillColor: Colors.white,
                                 prefixIcon: Icon(Icons.account_circle, size: 30, color:Theme.of(context).backgroundColor),
                                 border: OutlineInputBorder(
@@ -66,7 +59,6 @@ class PatientRegistrationForm extends StatefulWidget{
                     padding: EdgeInsets.all(10),
                     child: FlatButton(
                       padding: EdgeInsets.only(top:15,bottom:15,left:20,right:20),
-                      color: Theme.of(context).backgroundColor,
                       shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                       onPressed:(){
                         if(!_formKey.currentState.validate())

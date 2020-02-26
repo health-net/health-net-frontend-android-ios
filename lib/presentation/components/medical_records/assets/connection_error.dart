@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/medical_records/bloc/medical_records_bloc.dart';
 
-class ConnectionError extends StatelessWidget{
+class MedicalRecordsConnectionError extends StatelessWidget{
   final int code;
 
-  const ConnectionError(this.code,{Key key}) : super(key: key);
+  const MedicalRecordsConnectionError(this.code,{Key key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Column(
+       return Container(
+        child:Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children:<Widget>[
           Padding(
             padding: EdgeInsets.all(15),
@@ -33,7 +35,7 @@ class ConnectionError extends StatelessWidget{
           Padding(
             padding: EdgeInsets.all(15),
             child: Text(
-            "An Error has occurred while tring to reach the server",
+            "An Error has occurred while tryng to reach the server",
             style: TextStyle(
               fontSize: 14,
               color: Colors.white,
@@ -51,13 +53,13 @@ class ConnectionError extends StatelessWidget{
               },
               child: Icon(
                 Icons.refresh,
-                size: 30,
+                size: 40,
 
               )
                ),
             )
         ]
-      ),
+      )
     );
   }
   

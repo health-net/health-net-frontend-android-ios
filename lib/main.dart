@@ -100,7 +100,10 @@ class Page extends StatelessWidget{
                           }
                         if(authState is AuthenticationAuthenticated)
                           {
-                            return MedicalRecordsPage();
+                            return BlocProvider<AuthenticationBloc>(
+                              create: (BuildContext context)=>BlocProvider.of<AuthenticationBloc>(themeContext),
+                              child: MedicalRecordsPage()
+                            );
                           }
                         if(authState is AuthenticationUninitialized)
                           {

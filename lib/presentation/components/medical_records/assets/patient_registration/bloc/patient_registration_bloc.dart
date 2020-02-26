@@ -21,24 +21,19 @@ class PatientRegistrationBloc extends Bloc<PatientRegistrationEvent, PatientRegi
     if(event is RegistrationButtonPressed)
       {
         try{
-         await PatientHandler().registerPatient(event.patient);
+          await PatientHandler().registerPatient(event.patient);
+          yield PatientRegistrationSuccess();
         } on RESTAPIConsumptionException catch(e){
           yield PatientRegistrationFailed(e.getStatusCode(), event.patient.getFullName());
         } on SocketException catch(e){
           yield PatientRegistrationFailed(e.osError.errorCode, event.patient.getFullName());         
         }
-        yield PatientRegistrationSuccess();
       }
 
     if(event is RetryButtonPressed)
       {
         yield PatientRegistrationInitial(event.patientName);
       }
-
-    if(event is PatientRegistrationCompleted)
-    {
-      yield RegistrationCompleted();
-    }
 
     
 

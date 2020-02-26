@@ -57,14 +57,10 @@ class CustomLoginForm extends StatefulWidget{
                                             return null;
                                           },
                                           decoration: InputDecoration(
-                                            
                                                         labelText: 'password',
-                                                        prefixIcon: Icon(
-                                                                    Icons.lock,
-                                                                    size: 40,
-                                                                    ),
+                                                        prefixIcon: Icon(Icons.lock,size: 30),
                                                         border: OutlineInputBorder(
-                                                                    borderRadius: BorderRadius.circular(25)
+                                                                    borderRadius: BorderRadius.circular(25),
                                                                     ),
                                                       ),
                                                 ),
@@ -75,7 +71,7 @@ class CustomLoginForm extends StatefulWidget{
                                     child: FlatButton(
                                               padding:EdgeInsets.only(top: 15, bottom: 15, left: 50, right: 50),
                                               splashColor: Colors.cyan,
-                                              color: Colors.cyan,
+                                              color: Theme.of(context).accentColor,
                                               textColor: Colors.white,
                                               shape: new RoundedRectangleBorder(borderRadius: new BorderRadius.circular(25.0)),
                                               child: Text('LOGIN',style: TextStyle(fontSize: 20),),

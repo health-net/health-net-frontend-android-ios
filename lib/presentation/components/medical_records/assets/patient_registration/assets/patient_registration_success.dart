@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/patient_registration/bloc/patient_registration_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/medical_records/bloc/medical_records_bloc.dart';
 
 class PatientRegistrationSuccessPage extends StatelessWidget{
   @override
@@ -46,7 +47,7 @@ class PatientRegistrationSuccessPage extends StatelessWidget{
                 borderRadius: new BorderRadius.circular(25),
               ),
               onPressed:(){
-                BlocProvider.of<PatientRegistrationBloc>(context).add(PatientRegistrationCompleted());
+                BlocProvider.of<MedicalRecordsBloc>(context).add(PatientsFetchingRequired());
               },
               child: Icon(
                 Icons.keyboard_backspace,

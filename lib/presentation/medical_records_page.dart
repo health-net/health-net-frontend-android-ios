@@ -1,65 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/common/loading_component.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/authentication/bloc/authentication_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/connection_error.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/patient_registration/bloc/patient_registration_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/medical_records_list.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/patient_details/patient_detail_page.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/patient_registration/patient_registration_page.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/medical_records/assets/patients_sliverList.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/medical_records/bloc/medical_records_bloc.dart';
 
 class MedicalRecordsPage extends StatelessWidget{
   @override
-  Widget build(BuildContext patientsContext) {
-     MedicalRecordsBloc mrBloc = new MedicalRecordsBloc();
-    return Container(
-      decoration: BoxDecoration(
-                gradient:LinearGradient(
-                  colors: [Theme.of(patientsContext).scaffoldBackgroundColor, Theme.of(patientsContext).backgroundColor],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter
-                  ),
-              ),
-      child: BlocProvider(
-        create: (BuildContext context) =>mrBloc,
-        child: MRPage(),
-        ),
-          );
-        }
-        
-      }
-      
-      class MRPage extends StatelessWidget{
-      @override
-      Widget build(BuildContext context) {
-        return BlocBuilder(
-          bloc: BlocProvider.of<MedicalRecordsBloc>(context),
-          builder:(BuildContext medicalRecordsContext, medicalRecordState){
-            if(medicalRecordState is MedicalRecordsUninitialized)
-            {
-            BlocProvider.of<MedicalRecordsBloc>(context).add(PatientsFetchingRequired());
-            }
+  Widget build(BuildContext context) {
+    MedicalRecordsBloc medicalRecordsBLOC = new MedicalRecordsBloc();
+    return BlocBuilder<MedicalRecordsBloc, MedicalRecordsState>(
+      bloc:medicalRecordsBLOC,
+      builder:(BuildContext buildingContext,MedicalRecordsState medicalRecordsState){
+                if(medicalRecordsState is MedicalRecordsUninitialized)
+                {
+                  medicalRecordsBLOC.add(PatientsFetchingRequired());
+                  return LoadingElement();
+                }
 
-            if(medicalRecordState is MedicalRecordsFetchingFailed)
-            {
-              return ConnectionError(medicalRecordState.statusCode);
-            }
+                if(medicalRecordsState is MedicalRecordsInitialized)
+                {
+                  return MultiBlocProvider(
+                    providers: [
+                      BlocProvider<AuthenticationBloc>(create: (BuildContext authContext)=> BlocProvider.of<AuthenticationBloc>(context)),
+                      BlocProvider(create: (BuildContext mRContext)=> medicalRecordsBLOC)
+                    ],
+                    child: MedicalRecordsList(medicalRecordsState.patients));
+                }
 
-            if(medicalRecordState is MedicalRecordsInitialized)
-            {
-              return BlocProvider(
-                create: (BuildContext mriContext)=>BlocProvider.of<MedicalRecordsBloc>(context),
-                child:  PatientsSliverList(medicalRecordState.patients),
-                );
-             
-            }
+                if(medicalRecordsState is MedicalRecordsFetchingFailed)
+                {
+                     return BlocProvider<MedicalRecordsBloc>(
+                          create:(BuildContext context) => medicalRecordsBLOC,
+                          child: MedicalRecordsConnectionError(medicalRecordsState.statusCode),                
+                  );
+                }
 
-            if(medicalRecordState is PatientRegistrationPopupShowing)
-            {
-              return PatientRegistrationMediator();
-            }
-            return LoadingElement();
-          }
-          );
-      }
-            
-    }
+                if(medicalRecordsState is PatientRegistration)
+                {
+                  return PatientRegistrationPage();
+                }
+
+                if(medicalRecordsState is PatientDetails)
+                {
+                  return PatientDetailPage();
+                }
+                
+              }
+      );
+  }
+
+}

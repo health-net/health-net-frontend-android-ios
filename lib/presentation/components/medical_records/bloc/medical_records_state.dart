@@ -26,7 +26,12 @@ class MedicalRecordsFetchingFailed extends MedicalRecordsState{
   
 }
 
-class PatientRegistrationPopupShowing extends MedicalRecordsState{
+class PatientRegistration extends MedicalRecordsState{
+  @override
+  List<Object> get props =>[];
+}
+
+class PatientDetails extends MedicalRecordsState{
   @override
   List<Object> get props =>[];
 }

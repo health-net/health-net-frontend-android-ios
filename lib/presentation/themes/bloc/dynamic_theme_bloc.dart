@@ -3,8 +3,6 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:health_net_frontend_android_ios/presentation/themes/assets/dark_theme_materialColors.dart';
-import 'package:health_net_frontend_android_ios/presentation/themes/assets/light_theme_materialColors.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 part 'dynamic_theme_event.dart';

@@ -14,7 +14,7 @@ class AuthenticationHandler implements  AuthenticationInterface{
 ///Throws a [RESTAPIConsumptionException] if the http response doesn't contain the expected datas. 
   @override 
   Future<String> sendAuthenticationRequest(String email, String password) async{
-    final String url = Env.healthnet_ip+":"+Env.healthnet_auth_port+Env.healthnet_auth_if;
+    final String url ="https://"+Env.healthnet_ip+Env.healthnet_auth_if;
 
     Map<String,String> credentials = {"email":email,"password":password};
     
@@ -36,19 +36,4 @@ class AuthenticationHandler implements  AuthenticationInterface{
     // TODO: implement sendDeauthenticationRequest
     throw UnimplementedError();
   }
-
-  @override
-  Future<bool> checkValidToken(String token) async{
-       /*
-       final String url =Env.healthnet_ip+":"+Env.healthnet_auth_token_port+Env.healthnet_auth_token_if;
-        return await http.get(url).then(
-          (http.Response response){
-              if(response.statusCode<200||response.statusCode>=400)
-                return false;
-              return true;
-          });
-        */
-        return false;
-  }
-  
 }

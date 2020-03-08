@@ -8,6 +8,8 @@ class DeviceNodeProperty extends Equatable{
    final bool retained;
    final String unit;
 
+
+  
   DeviceNodeProperty(this.id, this.name, this.datatype, this.settable, this.retained, this.unit);
 
    factory DeviceNodeProperty.fromJSon(dynamic json) =>
@@ -17,7 +19,7 @@ class DeviceNodeProperty extends Equatable{
         json['datatype'] as String,
         json['settable'] as bool,
         json['retained'] as bool,
-        json['unit'] as String
+        json['unit'] as String,
         );
 
   @override

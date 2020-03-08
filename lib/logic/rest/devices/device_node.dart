@@ -16,8 +16,11 @@ class DeviceNode extends Equatable{
         json['id'] as String,
         json['name'] as String,
         json['type'] as String,
-        (jsonDecode(json['nodes']) as List).map((element) => DeviceNodeProperty.fromJSon(element)).toList()
+       (jsonDecode(json['properties']) as List).map((element) => DeviceNodeProperty.fromJSon(element)).toList()
       );
+       
+
+ 
 
   @override
   List<Object> get props =>[id, name, type];

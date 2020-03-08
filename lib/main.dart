@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/common/loading_component.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/authentication/bloc/authentication_bloc.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/login_form/assets/error_popup_dialog.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/medical_records/bloc/medical_records_bloc.dart';
-import 'package:health_net_frontend_android_ios/presentation/login_page.dart';
-import 'package:health_net_frontend_android_ios/presentation/medical_records_page.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/common/error_dialog/bloc/error_dialog_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/common/loading_dialog/bloc/loading_dialog_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/login/assets/authentication/bloc/authentication_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/patient_sensors/bloc/patient_sensors_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/patients/assets/patient_registration_dialog/bloc/patient_registration_dialog_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/patients/bloc/patients_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/user_registration/bloc/user_registration_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/login_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/patient_device_node_details_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/patients_screen.dart';
 import 'package:health_net_frontend_android_ios/presentation/themes/bloc/dynamic_theme_bloc.dart';
 
 import 'package:bloc/bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/user_management_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/user_registration_screen.dart';
 
 class SimpleBlocDelegate extends BlocDelegate {
   @override
@@ -23,7 +28,7 @@ class SimpleBlocDelegate extends BlocDelegate {
     print(transition);
   }
 
-void onError(Bloc bloc, Object error, StackTrace stacktrace) {
+  void onError(Bloc bloc, Object error, StackTrace stacktrace) {
     super.onError(bloc, error, stacktrace);
     print(error);
   }
@@ -31,102 +36,68 @@ void onError(Bloc bloc, Object error, StackTrace stacktrace) {
 
 void main() {
   BlocSupervisor.delegate = SimpleBlocDelegate();
-  runApp(
-    BlocProvider<AuthenticationBloc>(
-      create: (context) {
-        return AuthenticationBloc()..add(AppStarted());
-      },
-      child:App()
-      ),
-  );
-  
+  runApp(MultiBlocProvider(providers: [
+    BlocProvider(create: (BuildContext context) => LoadingDialogBloc()),
+    BlocProvider(create: (BuildContext context) => DynamicThemeBloc()),
+    BlocProvider(create: (BuildContext context) => AuthenticationBloc()),
+    BlocProvider(create: (BuildContext context) => PatientSensorsBloc()),
+  ], child: MyApp()));
 }
 
- class App extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations(
-      [
-        DeviceOrientation.portraitUp,
-        DeviceOrientation.portraitDown
-      ]
-    );
-    return MultiBlocProvider(providers: [
-      BlocProvider<DynamicThemeBloc>(
-        create: (BuildContext context)=>DynamicThemeBloc(),
-      ),
-      BlocProvider<AuthenticationBloc>(
-        create: (BuildContext context)=>AuthenticationBloc(),
-      )
-    ],
-    child: ThemeHandler());
-  }
-  }
+    return MaterialApp(
+      theme: BlocProvider.of<DynamicThemeBloc>(context).state.actualTheme,
+      initialRoute: '/authentication',
+      routes: {
+        '/authentication': (context) => MultiBlocProvider(providers: [
+              BlocProvider.value(
+                  value: BlocProvider.of<LoadingDialogBloc>(context)),
+              BlocProvider.value(
+                  value: BlocProvider.of<AuthenticationBloc>(context)),
+              BlocProvider(create: (BuildContext context) => ErrorDialogBloc()),
+            ], child: LoginScreen()),
 
-  class ThemeHandler extends StatelessWidget{
-  @override
-    Widget build(BuildContext context) {
-     return BlocBuilder<DynamicThemeBloc,DynamicThemeState>(
-      bloc: BlocProvider.of<DynamicThemeBloc>(context),
-      builder: (BuildContext themeContext, themeState) {
-                print(themeState.toString());
-                 return MaterialApp(
-                        theme: themeState.actualTheme,
-                        home: Page(context), 
-                    );
-                  }
-                  );
-            }
-    }
+        '/patients': (context) => MultiBlocProvider(providers: [
+              BlocProvider(create: (BuildContext context) => PatientsBloc()),
+              BlocProvider.value(
+                  value: BlocProvider.of<LoadingDialogBloc>(context)),
+              BlocProvider.value(
+                  value: BlocProvider.of<AuthenticationBloc>(context)),
+              BlocProvider.value(
+                  value: BlocProvider.of<PatientSensorsBloc>(context)),
+              BlocProvider(create: (BuildContext context) => UserRegistrationBloc()),
+              BlocProvider(
+                create: (BuildContext context) => ErrorDialogBloc(),
+              ),
+              BlocProvider(
+                  create: (BuildContext context) =>
+                      PatientRegistrationDialogBloc())
+            ], child: PatientsScreen()),
 
-class Page extends StatelessWidget{
-  final BuildContext authContext;
-
-  const Page(this.authContext,{Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext themeContext) {
-    return Scaffold(
-            resizeToAvoidBottomInset: false,
-            body: Container(
-                width: MediaQuery.of(themeContext).size.width,
-                height: MediaQuery.of(themeContext).size.height,
-                child:BlocBuilder<AuthenticationBloc,AuthenticationState>(
-                    bloc: BlocProvider.of<AuthenticationBloc>(themeContext),
-                    builder: (BuildContext authContext, authState){
-                        if(authState is AuthenticationUnauthenticated)
-                          {
-                            return LoginPage(); 
-                          }
-                        if(authState is AuthenticationAuthenticated)
-                          {
-                            return BlocProvider<AuthenticationBloc>(
-                              create: (BuildContext context)=>BlocProvider.of<AuthenticationBloc>(themeContext),
-                              child: MedicalRecordsPage()
-                            );
-                          }
-                        if(authState is AuthenticationUninitialized)
-                          {
-                          BlocProvider.of<AuthenticationBloc>(themeContext).add(AppStarted());
-                          return LoadingElement();
-                          }
-                        if(authState is AuthenticationFailed)
-                          {
-                            Future.delayed(Duration.zero, (){
-                            showDialog(
-                                context: themeContext,
-                                builder: (BuildContext dialogContext) =>CustomErrorDialog(authState.statusCode)
-                              );
-                            });
-                            BlocProvider.of<AuthenticationBloc>(authContext).add(LoginTentativeFailed());
-                            return LoadingElement();
-                          }
-                          return Container(height: 0.0,width: 0.0);
-                      },
-                  )
-      )
+        '/patient/device': (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider.value(
+                    value: BlocProvider.of<LoadingDialogBloc>(context)),
+                BlocProvider.value(
+                    value: BlocProvider.of<PatientSensorsBloc>(context)),
+              ],
+              child: PatientDeviceNodeScreen(),
+            ),
+        '/register': (context) => MultiBlocProvider(
+              providers: [
+                BlocProvider(
+                    create: (BuildContext context) => ErrorDialogBloc()),
+                BlocProvider(
+                    create: (BuildContext context) => UserRegistrationBloc()),
+                BlocProvider.value(
+                    value: BlocProvider.of<LoadingDialogBloc>(context))
+              ],
+              child: UserRegistrationScreen(),
+            ),
+        '/users':(context)=> UserManagementScreen()
+      },
     );
   }
-  
-} 
-  
+}

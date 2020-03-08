@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:convert';
 
 import 'package:equatable/equatable.dart';
@@ -18,7 +19,7 @@ class Device extends Equatable{
         json['homie'] as String,
         json['name'] as String,
         json['state'] as String,
-        (jsonDecode(json['nodes']) as List).map((element) => DeviceNode.fromJSon(element)).toList()
+        (jsonDecode(json['nodes']) as List).map((node) => DeviceNode.fromJSon(node))
         );
 
   @override

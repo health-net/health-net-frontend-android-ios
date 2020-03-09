@@ -88,12 +88,8 @@ class _PatientCardState extends State<PatientCard> {
                       height: 100,
                       child: Center(
                         child: Text("No devices available for this user",
-                            style: TextStyle(
-                                color:
-                                    Theme.of(context).textTheme.bodyText2.color,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold)),
-                      ));
+                            style:Theme.of(context).textTheme.body1
+                      )));
                 } else {
                   List<PatientDeviceCard> cards;
                   state.devices.forEach((element) {

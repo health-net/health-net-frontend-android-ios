@@ -67,25 +67,20 @@ class UserRegistrationElements extends StatelessWidget{
                 width: MediaQuery.of(context).size.width / 2,
                 height: MediaQuery.of(context).size.width / 4,
                 child: Image.asset('assets/logo/logo.png'),
-              )),
+              )
+              ),
           Padding(
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'HEALTH-NET',
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.headline6.color,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900),
-            ),
+              style: Theme.of(context).textTheme.display3
+            )
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'Register a new user:',
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.headline6.color,
-                  fontSize: 24,
-                  fontWeight: FontWeight.bold),
+              style: Theme.of(context).textTheme.display2
             ),
           ),
           Center(
@@ -105,8 +100,7 @@ class UserRegistrationElements extends StatelessWidget{
                   BlocProvider.value(value: BlocProvider.of<ErrorDialogBloc>(context))
                 ], child: UserRegistrationForm())),
           ),
-        ],
-      ),
+        ])
     );
   }
 }

@@ -30,7 +30,8 @@ class NetworkErrorElement extends StatelessWidget {
           width: 3,
           color: Theme.of(context).primaryColorLight,
         )),
-        child: Column(children: <Widget>[
+        child: Column(
+          children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 20, bottom: 5),
             child: Icon(
@@ -43,25 +44,20 @@ class NetworkErrorElement extends StatelessWidget {
             padding: EdgeInsets.only(top: 20, bottom: 5),
             child: Text("Error " + errorCode.toString(),
                 textAlign: TextAlign.center,
-                style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 20,
-                    color: Theme.of(context).textTheme.bodyText2.color)),
+                style: Theme.of(context).textTheme.body1,
+            )
           ),
           Padding(
             padding: EdgeInsets.only(top: 5, bottom: 25),
             child: Text(
               _errorCodes[errorCode],
-              style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                  color: Theme.of(context).textTheme.bodyText2.color),
+              style: Theme.of(context).textTheme.body1,
             ),
           ),
           FlatButton(
               padding: EdgeInsets.all(15),
               color: Theme.of(context).accentColor,
-              textColor: Theme.of(context).textTheme.bodyText2.color,
+              textColor: Theme.of(context).textTheme.body1.color,
               shape: new RoundedRectangleBorder(
                   borderRadius: new BorderRadius.circular(25.0)),
               child: Text(
@@ -71,6 +67,6 @@ class NetworkErrorElement extends StatelessWidget {
               onPressed: () {
                 BlocProvider.of<ErrorDialogBloc>(context).hide();
               }),
-        ]));
+    ]));
   }
 }

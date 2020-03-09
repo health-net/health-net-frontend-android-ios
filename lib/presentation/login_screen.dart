@@ -75,10 +75,7 @@ class LoginScreenElements extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'HEALTH-NET',
-              style: TextStyle(
-                  color: Theme.of(context).textTheme.headline6.color,
-                  fontSize: 40,
-                  fontWeight: FontWeight.w900),
+              style: Theme.of(context).textTheme.headline
             ),
           ),
           Center(

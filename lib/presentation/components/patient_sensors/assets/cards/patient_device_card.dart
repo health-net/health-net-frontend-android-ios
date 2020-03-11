@@ -1,21 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:health_net_frontend_android_ios/logic/rest/devices/device.dart';
 import 'package:health_net_frontend_android_ios/logic/rest/patients/patient.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/patient_sensors/assets/cards/interface/patient_sensors_card_interface.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/patient_sensors/bloc/patient_sensors_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/patient_device_node_properties_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/patient_device_node_screen.dart';
 class PatientDeviceCard extends PatientSensorsCardInterface{
-  final Device device;
   final Patient patient;
+  final Device device;
+  final String authToken;
 
-  PatientDeviceCard(this.device, this.patient);
+  PatientDeviceCard(this.patient, this.device, this.authToken);
+
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: new InkWell(
         onTap: (){
-          BlocProvider.of<PatientSensorsBloc>(context).add(PatientDeviceSelectedEvent(patient,device));
+         Navigator.of(context).pushNamed('/patient/device',arguments:DeviceArgs(patient,device,authToken));
         },
 
         child:
@@ -57,5 +59,4 @@ class PatientDeviceCard extends PatientSensorsCardInterface{
                 )
       );
   }
-  
 }

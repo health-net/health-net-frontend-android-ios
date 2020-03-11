@@ -5,40 +5,28 @@ import 'package:health_net_frontend_android_ios/presentation/components/common/e
 import 'package:health_net_frontend_android_ios/presentation/components/common/loading_dialog/bloc/loading_dialog_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/common/loading_dialog/loading_dialog.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/login/assets/authentication/bloc/authentication_bloc.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/patient_sensors/bloc/patient_sensors_bloc.dart';
-import 'package:health_net_frontend_android_ios/presentation/components/patients/assets/patient_card.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/patients/assets/patient_registration_dialog/bloc/patient_registration_dialog_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/patients/assets/patient_registration_dialog/patient_registration_dialog.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/patients/bloc/patients_bloc.dart';
+import 'package:health_net_frontend_android_ios/presentation/components/patients/patients_card_list.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/user_registration/bloc/user_registration_bloc.dart';
 
 class PatientsScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<PatientsBloc>(context).add(PatientsFetchingRequired());       
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: BlocListener<PatientsBloc, PatientsState>(
-        condition: (previousState, state) {
-          if (previousState is PatientsUninitializedState) {
+        listener: (context, state) {
+          if (state is PatientsFetchingFailed) {
             BlocProvider.of<LoadingDialogBloc>(context).hide();
-            if (state is PatientsFetchingFailed) {
-              if(state.statusCode==401){
-                BlocProvider.of<AuthenticationBloc>(context).add(LogOutTentative());
-                Navigator.of(context).pop();
-                BlocProvider.of<PatientsBloc>(context).close();
-                BlocProvider.of<PatientSensorsBloc>(context).close();
-                BlocProvider.of<ErrorDialogBloc>(context).close();
-                BlocProvider.of<PatientRegistrationDialogBloc>(context).close();
-              }
-
-              BlocProvider.of<ErrorDialogBloc>(context)
-                  .show(Icons.error_outline, state.statusCode);
+            if (state.statusCode == 401) {
+              BlocProvider.of<AuthenticationBloc>(context)
+                  .add(LogOutTentative());
+              Navigator.of(context).pop();
             }
           }
-          return true;
         },
-        listener: (context, state) {},
         child: Column(
           children: <Widget>[
             Container(
@@ -52,12 +40,10 @@ class PatientsScreen extends StatelessWidget {
                   BlocProvider.value(
                       value: BlocProvider.of<PatientsBloc>(context)),
                   BlocProvider.value(
-                      value: BlocProvider.of<PatientSensorsBloc>(context)),   
-                  BlocProvider.value(
-                      value: BlocProvider.of<PatientRegistrationDialogBloc>(context)),
+                      value: BlocProvider.of<PatientRegistrationDialogBloc>(
+                          context)),
                   BlocProvider.value(
                       value: BlocProvider.of<UserRegistrationBloc>(context))
-                
                 ], child: PatientsScreenElements())),
             BlocProvider.value(
                 value: BlocProvider.of<LoadingDialogBloc>(context),
@@ -70,113 +56,91 @@ class PatientsScreen extends StatelessWidget {
               value: BlocProvider.of<PatientRegistrationDialogBloc>(context),
               child: PatientRegistrationDialog(),
             ),
-           ],
+          ],
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add,size: 40,color:Colors.white),
-        onPressed: (){
-          BlocProvider.of<PatientRegistrationDialogBloc>(context).add(ShowPatientRegistration());
-        }
-        ),
+          child: Icon(Icons.add, size: 40, color: Colors.white),
+          onPressed: () {
+            BlocProvider.of<PatientRegistrationDialogBloc>(context)
+                .add(ShowPatientRegistration());
+          }),
     );
   }
 }
 
 class PatientsScreenElements extends StatelessWidget {
-  
   @override
   Widget build(BuildContext context) {
-    return BlocListener<PatientSensorsBloc,PatientSensorsState>(
-      listener:(context, state){
-        if(state is PatientSensorsDeviceSelectedState)
-        {
-          Navigator.of(context).pushNamed('/patient/device');
-        }
-      },
-      child: BlocBuilder<PatientsBloc,PatientsState>(
-      builder:(context, state){
-        if(state is PatientsInitializedState)
-        {
-          return CustomScrollView(
-            slivers: <Widget>[
-        SliverAppBar(
-          title: Text('Patients'),
-          centerTitle: true,
-          
+    BlocProvider.of<LoadingDialogBloc>(context).show();
+    return  BlocBuilder<PatientsBloc, PatientsState>(builder: (context, state) {
+        if (state is PatientsInitializedState) {
+          return CustomScrollView(slivers: <Widget>[
+            SliverAppBar(
+              title: Text('Patients'),
+              centerTitle: true,
 
-          flexibleSpace: FlexibleSpaceBar(
-            collapseMode: CollapseMode.parallax,
-            background: Center(
-              child: Container(
-                padding: EdgeInsets.all(30),
-                  child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                    Text("medical records count:"),
-                    Text(
-                      state.patients.length.toString(),
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                    )
-                  ])),
-            ),
-          ),
+              flexibleSpace: FlexibleSpaceBar(
+                collapseMode: CollapseMode.parallax,
+                background: Center(
+                  child: Container(
+                      padding: EdgeInsets.all(30),
+                      child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            Text("medical records count:"),
+                            Text(
+                              state.patients.length.toString(),
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 20),
+                            )
+                          ])),
+                ),
+              ),
 
-          leading: IconButton(
-              icon: Icon(Icons.exit_to_app, size: 30,),
-              onPressed: () {
-                BlocProvider.of<AuthenticationBloc>(context)
-                    .add(LogOutTentative());
-                Navigator.of(context).pop();
-                BlocProvider.of<PatientsBloc>(context).close();
-                BlocProvider.of<PatientSensorsBloc>(context).close();
-                BlocProvider.of<ErrorDialogBloc>(context).close();
-                BlocProvider.of<PatientRegistrationDialogBloc>(context).close();
-              }),
-
-          actions: <Widget>[
-          IconButton(
-             icon:Icon(Icons.person_add, size: 35),
-             onPressed:(){
-               Navigator.of(context).pushNamed('/register');
-             },
-          ),
-          Padding(
-            padding: EdgeInsets.only(left:10),
-            child: IconButton(
-            icon:Icon(Icons.list,size: 35), onPressed: (){
-              Navigator.of(context).pushNamed('/users');
-            }),
-            )
-        
-          ],
-
-          // Allows the user to reveal the app bar if they begin scrolling back
-          // up the list of items.
-          floating: true,
-          pinned: true,
-          
-          expandedHeight: 150,
-        ),
-        SliverList(
-          delegate:SliverChildBuilderDelegate(
-            (context, index) => Padding(
-                padding: EdgeInsets.only(top: 15, left: 15, right: 15),
-                child: BlocProvider.value(
-                  value: BlocProvider.of<PatientSensorsBloc>(context),
-                  child:PatientCard(state.patients.elementAt(index)),
+              leading: IconButton(
+                  icon: Icon(
+                    Icons.exit_to_app,
+                    size: 30,
                   ),
-          ),
-          childCount: state.patients.length,
-          ))
-            ]
-          );
+                  onPressed: () {
+                    BlocProvider.of<AuthenticationBloc>(context)
+                        .add(LogOutTentative());
+                     Navigator.of(context).pop();
+                  }),
+
+              actions: <Widget>[
+                IconButton(
+                  icon: Icon(Icons.person_add, size: 35),
+                  onPressed: () {
+                    Navigator.of(context).pushNamed('/register');
+                  },
+                ),
+                Padding(
+                  padding: EdgeInsets.only(left: 10),
+                  child: IconButton(
+                      icon: Icon(Icons.list, size: 35),
+                      onPressed: () {
+                        Navigator.of(context).pushNamed('/users');
+                      }),
+                )
+              ],
+
+              // Allows the user to reveal the app bar if they begin scrolling back
+              // up the list of items.
+              floating: true,
+              pinned: true,
+
+              expandedHeight: 150,
+            ),
+            BlocProvider.value(
+            value: BlocProvider.of<LoadingDialogBloc>(context),
+            child:PatientsCardList.fromPatients(state.patients))
+          ]);
         }
 
-        return Container(height:0.0, width:0.0);
-      }),);
-    
-    
+        return Container(height: 0.0, width: 0.0);
+      },
+    );
   }
 }

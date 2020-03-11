@@ -1,19 +1,18 @@
 part of 'loading_dialog_bloc.dart';
 
 abstract class LoadingDialogState extends Equatable {
-  final bool showing;
-  const LoadingDialogState(this.showing);
+  const LoadingDialogState();
 }
 
 class LoadingDialogShowing extends LoadingDialogState {
-  LoadingDialogShowing() : super(true);
+  LoadingDialogShowing() : super();
 
   @override
   List<Object> get props => [];
 }
 
 class LoadingDialogHiding extends LoadingDialogState{
-  LoadingDialogHiding() : super(false);
+  LoadingDialogHiding() : super();
 
   @override
   List<Object> get props =>[];

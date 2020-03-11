@@ -54,7 +54,8 @@ class AuthenticationBloc
     if (event is LogOutTentative) {
       //authHandler.sendDeauthenticationRequest();
       userRepo.deleteTokenByKey('authToken');
-      yield AuthenticationUnauthenticated(prefs.getString("email"));
+      yield(AuthenticationUninitialized());
+      add(AppStarted());
     }
 
     if (event is LoginTentativeFailed) {

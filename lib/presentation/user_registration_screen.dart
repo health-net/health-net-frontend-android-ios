@@ -73,14 +73,14 @@ class UserRegistrationElements extends StatelessWidget{
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'HEALTH-NET',
-              style: Theme.of(context).textTheme.display3
+              style: Theme.of(context).textTheme.display2
             )
           ),
           Padding(
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'Register a new user:',
-              style: Theme.of(context).textTheme.display2
+              style: Theme.of(context).textTheme.display1
             ),
           ),
           Center(

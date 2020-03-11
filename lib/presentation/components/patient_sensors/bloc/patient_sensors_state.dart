@@ -20,33 +20,11 @@ class PatientSensorsFetchingFailed extends PatientSensorsState {
 
 class PatientSensorsInitializedState extends PatientSensorsState {
   final List<Device> devices;
+  final String authTok;
 
-  PatientSensorsInitializedState(this.devices);
+  PatientSensorsInitializedState(this.devices, this.authTok);
   @override
   List<Object> get props => [devices];
-}
-
-class PatientSensorsDeviceSelectedState extends PatientSensorsState{
-  final Patient patient;
-  final String deviceId;
-  final List<DeviceNode> deviceNodes;
-
-  PatientSensorsDeviceSelectedState(this.deviceId,this.deviceNodes, this.patient);
-  
-  @override
-  List<Object> get props =>[patient,deviceNodes];
-}
-
-class PatientSensorsDeviceNodeSelectedState extends PatientSensorsState{
-    final Patient patient;
-  final String deviceId, deviceNodeId;
-  final List<DeviceNodeProperty> deviceNodeProperties;
-  final String authToken;
-
-  PatientSensorsDeviceNodeSelectedState(this.deviceNodeProperties, this.deviceId, this.deviceNodeId, this.authToken, this.patient);
-
-  @override
-  List<Object> get props =>[deviceNodeProperties];
 }
 
 

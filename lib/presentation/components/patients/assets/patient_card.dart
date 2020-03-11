@@ -7,8 +7,9 @@ import 'package:health_net_frontend_android_ios/presentation/components/patient_
 
 class PatientCard extends StatefulWidget {
   final Patient patient;
+  bool _ready = false;
 
-  const PatientCard(this.patient, {Key key}) : super(key: key);
+  PatientCard(this.patient, {Key key}) : super(key: key);
 
   @override
   State<PatientCard> createState() => _PatientCardState();
@@ -25,8 +26,6 @@ class _PatientCardState extends State<PatientCard> {
 
   @override
   Widget build(BuildContext context) {
-    BlocProvider.of<PatientSensorsBloc>(context)
-        .add(PatientSensorsFetchingRequiredEvent(this.widget.patient));
     return Container(
         decoration: BoxDecoration(
             color: Theme.of(context).primaryColorLight,
@@ -83,23 +82,21 @@ class _PatientCardState extends State<PatientCard> {
                 );
               }
               if (state is PatientSensorsInitializedState) {
+                widget._ready = true;
                 if (state.devices.length == 0) {
                   return Container(
                       height: 100,
                       child: Center(
-                        child: Text("No devices available for this user",
-                            style:Theme.of(context).textTheme.body1
-                      )));
+                          child: Text("No devices available for this user",
+                              style: Theme.of(context).textTheme.body1)));
                 } else {
-                  List<PatientDeviceCard> cards;
-                  state.devices.forEach((element) {
-                    cards.add(PatientDeviceCard(element,this.widget.patient));
-                  });
                   return GridView.extent(
                     maxCrossAxisExtent: 250,
                     mainAxisSpacing: 15,
                     crossAxisSpacing: 15,
-                    children: cards,
+                    children: List<PatientDeviceCard>.from(state.devices.map(
+                        (element) =>
+                            PatientDeviceCard(widget.patient, element,state.authTok))),
                   );
                 }
               }

@@ -9,15 +9,16 @@ class PatientDeviceNodeCard extends PatientSensorsCardInterface{
   final Patient patient;
   final String deviceId;
   final DeviceNode deviceNode;
+  final String authToken;
 
-  PatientDeviceNodeCard(this.deviceNode, this.deviceId, this.patient);
+  PatientDeviceNodeCard(this.deviceNode, this.deviceId, this.patient, this.authToken);
 
   @override
   Widget build(BuildContext context) {
     return Card(
       child: new InkWell(
         onTap: (){
-          BlocProvider.of<PatientSensorsBloc>(context).add(PatientDeviceNodeSelectedEvent(patient,deviceId,deviceNode));
+          Navigator.of(context).pushNamed('/patient/device/node');
         },
 
         child:

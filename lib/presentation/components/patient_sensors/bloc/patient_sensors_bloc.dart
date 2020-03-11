@@ -18,7 +18,6 @@ class PatientSensorsBloc
     extends Bloc<PatientSensorsEvent, PatientSensorsState> {
   @override
   PatientSensorsState get initialState => PatientSensorsUninitialized();
-
   @override
   Stream<PatientSensorsState> mapEventToState(
     PatientSensorsEvent event,
@@ -29,22 +28,12 @@ class PatientSensorsBloc
       try {
         List<Device> result=await DevicesInformationHandler()
             .getDevicesInformationByPatientID(event.patient.getId(), tok);
-        yield PatientSensorsInitializedState(result);
+        yield PatientSensorsInitializedState(result, tok);
       } on RESTAPIConsumptionException catch (excep) {
         yield PatientSensorsFetchingFailed(excep.getStatusCode());
       } on SocketException catch (excep) {
         yield PatientSensorsFetchingFailed(excep.osError.errorCode);
       }
-    }
-
-    if (event is PatientDeviceSelectedEvent) {
-      yield PatientSensorsDeviceSelectedState(
-          event.device.id, event.device.nodes, event.patient);
-    }
-
-    if (event is PatientDeviceNodeSelectedEvent) {
-      yield PatientSensorsDeviceNodeSelectedState(event.deviceNode.properties,
-          event.deviceId, event.deviceNode.id, tok, event.patient);
     }
   }
 }

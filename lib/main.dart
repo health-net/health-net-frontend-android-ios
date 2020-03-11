@@ -7,7 +7,8 @@ import 'package:health_net_frontend_android_ios/presentation/components/patients
 import 'package:health_net_frontend_android_ios/presentation/components/patients/bloc/patients_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/user_registration/bloc/user_registration_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/login_screen.dart';
-import 'package:health_net_frontend_android_ios/presentation/patient_device_node_details_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/patient_device_node_properties_screen.dart';
+import 'package:health_net_frontend_android_ios/presentation/patient_device_node_screen.dart';
 import 'package:health_net_frontend_android_ios/presentation/patients_screen.dart';
 import 'package:health_net_frontend_android_ios/presentation/themes/bloc/dynamic_theme_bloc.dart';
 
@@ -40,7 +41,7 @@ void main() {
     BlocProvider(create: (BuildContext context) => LoadingDialogBloc()),
     BlocProvider(create: (BuildContext context) => DynamicThemeBloc()),
     BlocProvider(create: (BuildContext context) => AuthenticationBloc()),
-    BlocProvider(create: (BuildContext context) => PatientSensorsBloc()),
+    BlocProvider(create: (BuildContext context) => PatientsBloc()),
   ], child: MyApp()));
 }
 
@@ -56,17 +57,18 @@ class MyApp extends StatelessWidget {
                   value: BlocProvider.of<LoadingDialogBloc>(context)),
               BlocProvider.value(
                   value: BlocProvider.of<AuthenticationBloc>(context)),
+                  BlocProvider.value(
+                  value: BlocProvider.of<PatientsBloc>(context)),
               BlocProvider(create: (BuildContext context) => ErrorDialogBloc()),
             ], child: LoginScreen()),
 
         '/patients': (context) => MultiBlocProvider(providers: [
-              BlocProvider(create: (BuildContext context) => PatientsBloc()),
+              BlocProvider.value(
+                  value: BlocProvider.of<PatientsBloc>(context)),
               BlocProvider.value(
                   value: BlocProvider.of<LoadingDialogBloc>(context)),
               BlocProvider.value(
                   value: BlocProvider.of<AuthenticationBloc>(context)),
-              BlocProvider.value(
-                  value: BlocProvider.of<PatientSensorsBloc>(context)),
               BlocProvider(create: (BuildContext context) => UserRegistrationBloc()),
               BlocProvider(
                 create: (BuildContext context) => ErrorDialogBloc(),
@@ -76,15 +78,10 @@ class MyApp extends StatelessWidget {
                       PatientRegistrationDialogBloc())
             ], child: PatientsScreen()),
 
-        '/patient/device': (context) => MultiBlocProvider(
-              providers: [
-                BlocProvider.value(
-                    value: BlocProvider.of<LoadingDialogBloc>(context)),
-                BlocProvider.value(
-                    value: BlocProvider.of<PatientSensorsBloc>(context)),
-              ],
-              child: PatientDeviceNodeScreen(),
-            ),
+        '/patient/device': (context) =>PatientDeviceNodesScreen(),
+        
+        '/patient/device/node' :(context) =>PatientDeviceNodePropertiesScreen(),
+
         '/register': (context) => MultiBlocProvider(
               providers: [
                 BlocProvider(

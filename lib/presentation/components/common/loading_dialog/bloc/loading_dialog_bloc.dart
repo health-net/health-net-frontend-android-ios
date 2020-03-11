@@ -9,6 +9,7 @@ part 'loading_dialog_state.dart';
 class LoadingDialogBloc extends Bloc<LoadingDialogEvent, LoadingDialogState> {
   void show() =>add(ShowLoadingDialog());
   void hide() =>add(HideLoadingDialog());
+   bool _showing=false;
   @override
   LoadingDialogState get initialState => LoadingDialogHiding();
 
@@ -16,14 +17,16 @@ class LoadingDialogBloc extends Bloc<LoadingDialogEvent, LoadingDialogState> {
   Stream<LoadingDialogState> mapEventToState(
     LoadingDialogEvent event,
   ) async* {
-    if(event is ShowLoadingDialog)
+    if(event is ShowLoadingDialog&&!_showing)
     {
       yield LoadingDialogShowing();
+      _showing=true;
     }
 
-    if(event is HideLoadingDialog)
+    if(event is HideLoadingDialog&&_showing)
     {
       yield LoadingDialogHiding();
+      _showing=false;
     }
   }
 }

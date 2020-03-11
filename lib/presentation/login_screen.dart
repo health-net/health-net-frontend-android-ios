@@ -7,7 +7,7 @@ import 'package:health_net_frontend_android_ios/presentation/components/common/l
 import 'package:health_net_frontend_android_ios/presentation/components/common/loading_dialog/loading_dialog.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/login/assets/authentication/bloc/authentication_bloc.dart';
 import 'package:health_net_frontend_android_ios/presentation/components/login/assets/login_form.dart';
-
+import 'package:health_net_frontend_android_ios/presentation/components/patients/bloc/patients_bloc.dart';
 class LoginScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -19,19 +19,20 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
         resizeToAvoidBottomInset: false,
         body: BlocListener<AuthenticationBloc, AuthenticationState>(
-          condition: (previousState, state) {
-            if (previousState is AuthenticationUnauthenticated &&
-                state is AuthenticationFailed) {
+           listener: (context, state) {
+            if(state is AuthenticationUnauthenticated)
+            {
               BlocProvider.of<LoadingDialogBloc>(context).hide();
-              BlocProvider.of<ErrorDialogBloc>(context)
-                  .show(Icons.error_outline, state.statusCode);
             }
-            return true;
-          },
-          listener: (context, state) {
             if (state is AuthenticationAuthenticated) {
-              Navigator.pushNamed(context, "/patients");
+              BlocProvider.of<PatientsBloc>(context).add(PatientsFetchingRequired());
+              BlocProvider.of<LoadingDialogBloc>(context).hide();
               BlocProvider.of<ErrorDialogBloc>(context).close();
+              Navigator.pushNamed(context, "/patients");
+            }
+            if(state is AuthenticationFailed){
+              BlocProvider.of<LoadingDialogBloc>(context).hide();
+              BlocProvider.of<ErrorDialogBloc>(context).show(Icons.error_outline, state.statusCode);
             }
           },
           child: Column(
@@ -54,15 +55,16 @@ class LoginScreen extends StatelessWidget {
               ),
             ],
           ),
-        ));
+          ),
+        );
   }
 }
 
 class LoginScreenElements extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-      child: Column(
+    return  SingleChildScrollView(
+      child:Column(
         children: <Widget>[
           Padding(
               padding: EdgeInsets.only(top: 80, bottom: 20),
@@ -75,7 +77,7 @@ class LoginScreenElements extends StatelessWidget {
             padding: EdgeInsets.only(bottom: 50),
             child: Text(
               'HEALTH-NET',
-              style: Theme.of(context).textTheme.headline
+              style: Theme.of(context).textTheme.display2
             ),
           ),
           Center(
@@ -94,8 +96,7 @@ class LoginScreenElements extends StatelessWidget {
                       value: BlocProvider.of<LoadingDialogBloc>(context)),
                 ], child: LoginForm())),
           ),
-        ],
-      ),
+        ],)
     );
   }
 }
